@@ -20,15 +20,6 @@ ANVIL_PID_FILE   := .anvil.pid
 CONTRACT_FILE    := .contract-address
 PRIVATE_KEY      ?= 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
-# Dummy keys so foundry.toml variable interpolation does not fail
-export API_KEY_ARBISCAN        := dummy
-export API_KEY_SNOWTRACE       := dummy
-export API_KEY_BSCSCAN         := dummy
-export API_KEY_GNOSISSCAN      := dummy
-export API_KEY_ETHERSCAN       := dummy
-export API_KEY_OPTIMISTIC_ETHERSCAN := dummy
-export API_KEY_POLYGONSCAN     := dummy
-
 # ---------------------------------------------------------------------------
 # Anvil helpers
 # ---------------------------------------------------------------------------
