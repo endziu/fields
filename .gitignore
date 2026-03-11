@@ -19,3 +19,5 @@ broadcast/*
 broadcast/*/31337/
 prompt
 dev_deployment_plan.md
+.notes.md
+REVIEW.md
