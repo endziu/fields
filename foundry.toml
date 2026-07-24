@@ -21,6 +21,9 @@
   fuzz = { runs = 10_000 }
   verbosity = 4
 
+[lint]
+  ignore = ["test/**/*.sol"]
+
 [fmt]
   bracket_spacing = true
   int_types = "long"

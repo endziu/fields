@@ -3,7 +3,6 @@ pragma solidity ^0.8.19;
 
 import { Test } from "forge-std/Test.sol";
 import { Fields } from "../src/Fields.sol";
-import { DeployFields } from "../script/DeployFields.s.sol";
 
 contract BlindSpotTest is Test {
     Fields public fields;
@@ -11,13 +10,13 @@ contract BlindSpotTest is Test {
     function testConstructorBypassSupplyCap() public {
         // defined MAX_SUPPLY is 10
         bytes32[] memory assets = new bytes32[](11);
-        for(uint256 i = 0; i < 11; i++) {
+        for (uint256 i = 0; i < 11; i++) {
             assets[i] = bytes32(uint256(i + 1));
         }
-        
+
         // This should NOT revert if my hypothesis is true
         fields = new Fields(assets);
-        
+
         // Check collection size
         assertEq(fields.collectionSize(), 11);
     }
@@ -32,7 +31,7 @@ contract BlindSpotTest is Test {
 
         // Mint it
         vm.deal(address(this), 1 ether);
-        fields.safeMint{value: 0.1 ether}(uri);
+        fields.safeMint{ value: 0.1 ether }(uri);
 
         // Verify it's not for sale
         (bool forSale) = fields.isForSale(uriHash);

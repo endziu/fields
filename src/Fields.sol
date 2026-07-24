@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 import { ERC721 } from "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import { IERC20 } from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import { SafeERC20 } from "openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 import { ERC721Enumerable } from "openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import { ERC721URIStorage } from "openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { Ownable } from "openzeppelin-contracts/contracts/access/Ownable.sol";
@@ -158,7 +159,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @param _erc20Token The ERC20 token to be withdrawn
      */
     function withdrawAllERC20(IERC20 _erc20Token) external onlyOwner {
-        _erc20Token.transfer(owner(), _erc20Token.balanceOf(address(this)));
+        SafeERC20.safeTransfer(_erc20Token, owner(), _erc20Token.balanceOf(address(this)));
     }
 
     ////////////////////////
