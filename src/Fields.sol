@@ -146,7 +146,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @dev Only the owner of the token can burn it
      * @param tokenId The ID of the token to be burned
      */
-    function burn(uint256 tokenId) public {
+    function burn(uint256 tokenId) external {
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: caller is not token owner or approved");
         _burn(tokenId);
     }
@@ -156,7 +156,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @dev Only the owner can withdraw the Ether
      * @dev Withdrawal address is hardcoded to be the owner address
      */
-    function withdrawAll() public onlyOwner {
+    function withdrawAll() external onlyOwner {
         Address.sendValue(payable(owner()), address(this).balance);
     }
 

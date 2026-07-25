@@ -7,7 +7,7 @@ import { Ownable } from "openzeppelin-contracts/contracts/access/Ownable.sol";
 contract ExampleToken is ERC20, Ownable {
     constructor() ERC20("ExampleToken", "ETK") { }
 
-    function mint(address to, uint256 amount) public onlyOwner {
+    function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
 }
