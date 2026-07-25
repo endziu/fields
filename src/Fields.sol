@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity 0.8.36;
 
 import { ERC721 } from "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import { IERC20 } from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
@@ -56,13 +56,19 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @param uri The URI of the token that was minted
      * @param id The ID of the token that was minted
      */
-    event Mint(address minter, string uri, uint256 id);
+    event Mint(address indexed minter, string uri, uint256 id);
 
     /**
      * @notice Emitted when a new asset is added
      * @param asset The hash of the asset that was added
      */
     event AddAsset(bytes32 asset);
+
+    /**
+     * @notice Emitted when the mint status is toggled
+     * @param mintActive The new mint status
+     */
+    event MintStatusToggled(bool mintActive);
 
     ////////////////////
     // Constructor    //
@@ -132,6 +138,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      */
     function toggleMintStatus() external onlyOwner {
         mintActive = !mintActive;
+        emit MintStatusToggled(mintActive);
     }
 
     /**
@@ -139,7 +146,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @dev Only the owner of the token can burn it
      * @param tokenId The ID of the token to be burned
      */
-    function burn(uint256 tokenId) public {
+    function burn(uint256 tokenId) external {
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: caller is not token owner or approved");
         _burn(tokenId);
     }
@@ -149,17 +156,17 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @dev Only the owner can withdraw the Ether
      * @dev Withdrawal address is hardcoded to be the owner address
      */
-    function withdrawAll() public onlyOwner {
+    function withdrawAll() external onlyOwner {
         Address.sendValue(payable(owner()), address(this).balance);
     }
 
     /**
      * @notice Withdraws all of a specific ERC20 token held by the contract
      * @dev Only the owner can withdraw the tokens
-     * @param _erc20Token The ERC20 token to be withdrawn
+     * @param erc20Token The ERC20 token to be withdrawn
      */
-    function withdrawAllERC20(IERC20 _erc20Token) external onlyOwner {
-        SafeERC20.safeTransfer(_erc20Token, owner(), _erc20Token.balanceOf(address(this)));
+    function withdrawAllERC20(IERC20 erc20Token) external onlyOwner {
+        SafeERC20.safeTransfer(erc20Token, owner(), erc20Token.balanceOf(address(this)));
     }
 
     ////////////////////////
