@@ -5,7 +5,7 @@ import { Test, stdStorage, StdStorage } from "forge-std/Test.sol";
 import { DeployFields } from "../script/DeployFields.s.sol";
 import { DeployExampleToken } from "../script/DeployExampleToken.s.sol";
 import { Fields } from "../src/Fields.sol";
-import { ExampleToken } from "../src/ExampleToken.sol";
+import { ExampleToken } from "./mocks/ExampleToken.sol";
 
 contract WithdrawTest is Test {
     using stdStorage for StdStorage;
