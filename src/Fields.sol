@@ -56,7 +56,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @param uri The URI of the token that was minted
      * @param id The ID of the token that was minted
      */
-    event Mint(address minter, string uri, uint256 id);
+    event Mint(address indexed minter, string uri, uint256 id);
 
     /**
      * @notice Emitted when a new asset is added

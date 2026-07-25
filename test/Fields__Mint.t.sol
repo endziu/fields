@@ -135,7 +135,7 @@ contract Receiver is IERC721Receiver {
 
 contract ExpectEmit {
     event AddAsset(string asset);
-    event Mint(address minter, string uri, uint256 id);
+    event Mint(address indexed minter, string uri, uint256 id);
 
     function addAssetEvent() public {
         emit AddAsset("nft4");
