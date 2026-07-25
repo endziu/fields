@@ -7,18 +7,15 @@ import { Fields } from "../src/Fields.sol";
 contract BlindSpotTest is Test {
     Fields public fields;
 
-    function testConstructorBypassSupplyCap() public {
+    function testConstructorEnforcesSupplyCap() public {
         // defined MAX_SUPPLY is 10
         bytes32[] memory assets = new bytes32[](11);
         for (uint256 i = 0; i < 11; i++) {
             assets[i] = bytes32(uint256(i + 1));
         }
 
-        // This should NOT revert if my hypothesis is true
+        vm.expectRevert(Fields.SupplyCapReached.selector);
         fields = new Fields(assets);
-
-        // Check collection size
-        assertEq(fields.collectionSize(), 11);
     }
 
     function testReAddSoldAsset() public {

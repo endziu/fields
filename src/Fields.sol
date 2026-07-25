@@ -72,6 +72,9 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @param assets An array of assets available for sale at the time of contract creation
      */
     constructor(bytes32[] memory assets) ERC721("Fields", "FLD") {
+        if (assets.length > MAX_SUPPLY) {
+            revert SupplyCapReached();
+        }
         _flagForSale(assets);
     }
 
@@ -85,9 +88,6 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @return true if the assets are successfully added
      */
     function addAssets(bytes32[] memory assets) external onlyOwner returns (bool) {
-        if (!mintActive) {
-            revert MintNotActive();
-        }
         if (assets.length + collectionSize > MAX_SUPPLY) {
             revert SupplyCapReached();
         }
