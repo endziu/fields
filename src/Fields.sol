@@ -163,10 +163,10 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     /**
      * @notice Withdraws all of a specific ERC20 token held by the contract
      * @dev Only the owner can withdraw the tokens
-     * @param _erc20Token The ERC20 token to be withdrawn
+     * @param erc20Token The ERC20 token to be withdrawn
      */
-    function withdrawAllERC20(IERC20 _erc20Token) external onlyOwner {
-        SafeERC20.safeTransfer(_erc20Token, owner(), _erc20Token.balanceOf(address(this)));
+    function withdrawAllERC20(IERC20 erc20Token) external onlyOwner {
+        SafeERC20.safeTransfer(erc20Token, owner(), erc20Token.balanceOf(address(this)));
     }
 
     ////////////////////////
