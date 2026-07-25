@@ -53,7 +53,7 @@ contract PauseTest is Test {
         fields.safeMint{ value: 0.1 ether }("bafkreidcapki3wfwy356um7wvwiud4cpnrucnuumtlw6g3fjx6eswynlx4");
     }
 
-    function testPauseNotAbleToAddAssets() public {
+    function testPauseStillAbleToAddAssets() public {
         vm.startPrank(address(fields.owner()));
         vm.deal(address(fields.owner()), 1 ether);
 
@@ -61,8 +61,8 @@ contract PauseTest is Test {
 
         bytes32[] memory assets = new bytes32[](1);
         assets[0] = bytes32("nft4");
-        vm.expectRevert(Fields.MintNotActive.selector);
         fields.addAssets(assets);
+        assertTrue(fields.isForSale(assets[0]));
         vm.stopPrank();
     }
 }
