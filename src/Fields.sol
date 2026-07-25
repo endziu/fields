@@ -64,6 +64,12 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      */
     event AddAsset(bytes32 asset);
 
+    /**
+     * @notice Emitted when the mint status is toggled
+     * @param mintActive The new mint status
+     */
+    event MintStatusToggled(bool mintActive);
+
     ////////////////////
     // Constructor    //
     ////////////////////
@@ -132,6 +138,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      */
     function toggleMintStatus() external onlyOwner {
         mintActive = !mintActive;
+        emit MintStatusToggled(mintActive);
     }
 
     /**
