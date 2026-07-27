@@ -41,7 +41,7 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     // State Variables    //
     ////////////////////////
     uint256 public constant MINT_PRICE = 0.1 ether;
-    uint256 public constant MAX_SUPPLY = 10;
+    uint256 public constant MAX_SUPPLY = 256;
     uint256 public collectionSize;
     bool public mintActive = true;
     mapping(bytes32 assetHash => bool forSaleStatus) public isForSale;
@@ -184,10 +184,11 @@ contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
                 revert DuplicateAsset();
             }
             isForSale[assets[i]] = true;
-            collectionSize = collectionSize + 1;
             emit AddAsset(assets[i]);
             ++i;
         }
+
+        collectionSize += len;
     }
 
     ////////////////////////

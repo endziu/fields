@@ -1,6 +1,6 @@
 # Static Analysis Report
 
-Generated with [Slither](https://github.com/crytic/slither) v0.11.5 and [Aderyn](https://github.com/Cyfrin/aderyn) v0.6.8 against `src/Fields.sol` and `src/ExampleToken.sol`.
+Generated with [Slither](https://github.com/crytic/slither) v0.11.5 and [Aderyn](https://github.com/Cyfrin/aderyn) v0.6.8 against `src/Fields.sol` (the `ExampleToken` mock now lives in `test/mocks/` and is out of scope).
 
 No high or medium severity issues were found in project code (findings from vendored `lib/` dependencies were excluded as out of scope).
 
@@ -8,63 +8,38 @@ No high or medium severity issues were found in project code (findings from vend
 
 | Tool | High | Medium | Low | Informational |
 | --- | --- | --- | --- | --- |
-| Slither (project scope) | 0 | 0 | 0 | 3 |
-| Aderyn | 0 | 0 | 6 | 0 |
+| Slither (project scope) | 0 | 0 | 0 | 0 |
+| Aderyn | 0 | 0 | 3 | 0 |
 
 ## Slither Findings
 
-**THIS CHECKLIST IS NOT COMPLETE**. Use `--show-ignored-findings` to show all the results.
-
-### solc-version (Informational)
-Version constraint `^0.8.19` contains known severe issues (VerbatimInvalidDeduplication, FullInlinerNonExpressionSplitArgumentEvaluationOrder, MissingSideEffectsOnSelectorAccess).
-- `src/ExampleToken.sol#L2`
-- `src/Fields.sol#L2`
-
-### naming-convention (Informational)
-Parameter `Fields.withdrawAllERC20(IERC20)._erc20Token` is not in mixedCase.
-- `src/Fields.sol#L161`
-
-### unindexed-event-address (Informational)
-Event `Fields.Mint(address,string,uint256)` has address parameters but no indexed parameters.
-- `src/Fields.sol#L59`
+No findings in project scope.
 
 ## Aderyn Findings
 
 ### L-1: Centralization Risk
 Contracts have owners with privileged rights to perform admin tasks and need to be trusted to not perform malicious updates or drain funds.
-- `src/ExampleToken.sol#L7` — `contract ExampleToken is ERC20, Ownable`
-- `src/ExampleToken.sol#L10` — `function mint(address to, uint256 amount) public onlyOwner`
 - `src/Fields.sol#L28` — `contract Fields is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable`
-- `src/Fields.sol#L90` — `function addAssets(bytes32[] memory assets) external onlyOwner`
-- `src/Fields.sol#L133` — `function toggleMintStatus() external onlyOwner`
-- `src/Fields.sol#L152` — `function withdrawAll() public onlyOwner`
-- `src/Fields.sol#L161` — `function withdrawAllERC20(IERC20 _erc20Token) external onlyOwner`
+- `src/Fields.sol#L96` — `function addAssets(bytes32[] memory assets) external onlyOwner`
+- `src/Fields.sol#L139` — `function toggleMintStatus() external onlyOwner`
+- `src/Fields.sol#L159` — `function withdrawAll() external onlyOwner`
+- `src/Fields.sol#L168` — `function withdrawAllERC20(IERC20 erc20Token) external onlyOwner`
+
+Accepted: inherent to the curated allow-list design (owner controls the asset list, pause, and withdrawals).
 
 ### L-2: Costly Operations Inside Loop
-Invoking `SSTORE` operations in loops may waste gas. Use a local variable to hold the loop computation result.
-- `src/Fields.sol#L175` (loop inside `addAssets`)
+Invoking `SSTORE` operations in loops may waste gas.
+- `src/Fields.sol#L182` (loop inside `_flagForSale`, called from `addAssets` and the constructor)
+
+Partially addressed: `collectionSize` used to be re-written on every iteration (`collectionSize = collectionSize + 1`) — it's now accumulated in a local variable and written once after the loop. The remaining `isForSale[assets[i]] = true` write is unavoidable, since each asset needs its own storage slot flagged; the detector flags any SSTORE inside a loop regardless.
 
 ### L-3: Loop Contains `require`/`revert`
 Avoid `require`/`revert` inside a loop — a single bad item causes the whole transaction to fail.
-- `src/Fields.sol#L175` (loop inside `addAssets`)
+- `src/Fields.sol#L182` (loop inside `_flagForSale`)
 
-### L-4: State Change Without Event
-State variable changes without a corresponding event, hindering offchain indexing.
-- `src/Fields.sol#L133` — `toggleMintStatus()`
-
-### L-5: Unspecific Solidity Pragma
-Consider pinning to an exact Solidity version instead of `^0.8.19`.
-- `src/ExampleToken.sol#L2`
-- `src/Fields.sol#L2`
-
-### L-6: Public Function Not Used Internally
-Functions marked `public` but never called internally could be `external` to save gas.
-- `src/ExampleToken.sol#L10` — `mint(address,uint256)`
-- `src/Fields.sol#L142` — `burn(uint256)`
-- `src/Fields.sol#L152` — `withdrawAll()`
+Accepted: the revert-on-duplicate is intentional — `addAssets` is meant to be all-or-nothing so a bad batch never partially registers. `MAX_SUPPLY` bounds the loop to 256 owner-supplied items, so griefing/gas-DoS risk is not a concern.
 
 ## Notes
 
-- `src/ExampleToken.sol` appears to be a leftover template file unrelated to the `Fields` contract — worth confirming whether it should be removed.
+- `MAX_SUPPLY` was raised from 10 to 256.
 - No reentrancy, access-control, or arithmetic vulnerabilities were flagged in project code.
-- Consider addressing L-4 (missing event on `toggleMintStatus`) and L-6 (tighten visibility) as low-cost cleanups.

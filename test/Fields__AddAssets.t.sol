@@ -52,16 +52,11 @@ contract AddAssetsTest is Test {
 
     function testAddAssetPastSupplyCap() public {
         vm.prank(address(fields.owner()));
-        bytes32[] memory assetsToAdd = new bytes32[](9);
-        assetsToAdd[0] = bytes32("nft4");
-        assetsToAdd[1] = bytes32("nft5");
-        assetsToAdd[2] = bytes32("nft6");
-        assetsToAdd[3] = bytes32("nft7");
-        assetsToAdd[4] = bytes32("nft8");
-        assetsToAdd[5] = bytes32("nft9");
-        assetsToAdd[6] = bytes32("nft10");
-        assetsToAdd[7] = bytes32("nft11");
-        assetsToAdd[8] = bytes32("nft12");
+        // deployer seeds 3 assets, so pushing collectionSize above MAX_SUPPLY (256) requires 254 more.
+        bytes32[] memory assetsToAdd = new bytes32[](254);
+        for (uint256 i = 0; i < assetsToAdd.length; i++) {
+            assetsToAdd[i] = bytes32(uint256(i + 1));
+        }
         vm.expectRevert(Fields.SupplyCapReached.selector);
         fields.addAssets(assetsToAdd);
     }
