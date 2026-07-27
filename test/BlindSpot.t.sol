@@ -8,9 +8,9 @@ contract BlindSpotTest is Test {
     Fields public fields;
 
     function testConstructorEnforcesSupplyCap() public {
-        // defined MAX_SUPPLY is 10
-        bytes32[] memory assets = new bytes32[](11);
-        for (uint256 i = 0; i < 11; i++) {
+        // defined MAX_SUPPLY is 256
+        bytes32[] memory assets = new bytes32[](257);
+        for (uint256 i = 0; i < 257; i++) {
             assets[i] = bytes32(uint256(i + 1));
         }
 
